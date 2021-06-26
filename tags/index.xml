@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on 自然之道，是谓数学</title>
+    <link>https://shuxuezhuyi.github.io/tags/</link>
+    <description>Recent content in Tags on 自然之道，是谓数学</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>2018-2021 数学主义. Licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.</copyright>
+    <lastBuildDate>Sat, 26 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://shuxuezhuyi.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Lean</title>
+      <link>https://shuxuezhuyi.github.io/tags/lean/</link>
+      <pubDate>Sat, 26 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://shuxuezhuyi.github.io/tags/lean/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>数学</title>
+      <link>https://shuxuezhuyi.github.io/tags/%E6%95%B0%E5%AD%A6/</link>
+      <pubDate>Wed, 23 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://shuxuezhuyi.github.io/tags/%E6%95%B0%E5%AD%A6/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>LyX</title>
+      <link>https://shuxuezhuyi.github.io/tags/lyx/</link>
+      <pubDate>Tue, 04 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://shuxuezhuyi.github.io/tags/lyx/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>快捷键</title>
+      <link>https://shuxuezhuyi.github.io/tags/%E5%BF%AB%E6%8D%B7%E9%94%AE/</link>
+      <pubDate>Tue, 04 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://shuxuezhuyi.github.io/tags/%E5%BF%AB%E6%8D%B7%E9%94%AE/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

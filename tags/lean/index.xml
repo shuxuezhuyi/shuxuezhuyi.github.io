@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lean on 自然之道，是谓数学</title>
+    <link>https://shuxuezhuyi.github.io/tags/lean/</link>
+    <description>Recent content in Lean on 自然之道，是谓数学</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>2018-2021 数学主义. Licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.</copyright>
+    <lastBuildDate>Sat, 26 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://shuxuezhuyi.github.io/tags/lean/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Lean Theorem Prover 安装手记</title>
+      <link>https://shuxuezhuyi.github.io/post/lean/</link>
+      <pubDate>Sat, 26 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://shuxuezhuyi.github.io/post/lean/</guid>
+      <description>我主要是遵循 https://leanprover-community.github.io/install/debian_details.html 来安装。
+在虚拟机中安装 debian11，配置 4G 内存与 4G 交换空间。创建标准用户。以标准用户身份登陆，然后在终端依次执行以下命令（感觉直接以 root 身份登陆执行更恰当）：
+wget -O code.deb https://go.microsoft.com/fwlink/?LinkID=760868 sudo apt install -y git curl python3 python3-pip python3-venv sudo apt install ./code.deb rm code.deb 前往 https://github.com/leanprover/elan/blob/master/elan-init.sh 复制 elan-init.sh 的内容到 ~/elan-init.sh 中（也可以用 git clone --depth=1 https://github.com/leanprover/elan.git 把仓库克隆最新版本下来再把文件找出来），然后继续在终端依次执行以下命令（要用标准用户，别用 root 用户）：
+bash elan-init.sh -y code --install-extension jroesch.lean python3 -m pip install --user pipx python3 -m pipx ensurepath source ~/.profile pipx install mathlibtools 最后打开 ~/.bashrc ，把 ~/.elan/bin 添加到路径中。</description>
+    </item>
+    
+    <item>
+      <title>使用 Lean 写证明（写作中）</title>
+      <link>https://shuxuezhuyi.github.io/post/%E4%BD%BF%E7%94%A8lean%E5%86%99%E8%AF%81%E6%98%8E/</link>
+      <pubDate>Wed, 23 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://shuxuezhuyi.github.io/post/%E4%BD%BF%E7%94%A8lean%E5%86%99%E8%AF%81%E6%98%8E/</guid>
+      <description>Lean 中的证明如何终止 类型论只有一个核心概念：类型。命题也是一种类型。证明一个命题就是构造一个类型的对象的过程。
+Lean 中命题的类型就是 Prop。如果 P 的类型是 Prop，而 Q 的类型是 P，则 Q 是 P 的一个证明。使用 #check 表达式 即可检查表达式的类型。
+证明的标准写法：theorem 类型A : 类型B := 类型A 的定义，这可以想象成 theorem 证法A : 命题 B := 证法A 的内容。
+要省略一个证明，可以用 sorry，就像这样：theorem 这太难了 : 费马大定理 := sorry。
+Lean 如何检查证明 example (a b c : ℝ) : (a * b) * c = b * (a * c) := begin rw mul_comm a b, rw mul_assoc b a c end 在上述证明中，要证明的目标（goal）是“对任意实数 $a,b,c$ 都有 $(a* b) * c=b* (a* c)$”。Lean 检查证明的过程，就是逐行执行位于 begin 与 end 之间的代码，而执行每一行代码都意味着把当前目标变换为新的目标。</description>
+    </item>
+    
+  </channel>
+</rss>

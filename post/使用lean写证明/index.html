@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html><head>
+<title>使用 Lean 写证明（写作中）</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+<meta property="og:title" content="使用 Lean 写证明（写作中）" />
+<meta property="og:description" content="Lean 中的证明如何终止 类型论只有一个核心概念：类型。命题也是一种类型。证明一个命题就是构造一个类型的对象的过程。
+Lean 中命题的类型就是 Prop。如果 P 的类型是 Prop，而 Q 的类型是 P，则 Q 是 P 的一个证明。使用 #check 表达式 即可检查表达式的类型。
+证明的标准写法：theorem 类型A : 类型B := 类型A 的定义，这可以想象成 theorem 证法A : 命题 B := 证法A 的内容。
+要省略一个证明，可以用 sorry，就像这样：theorem 这太难了 : 费马大定理 := sorry。
+Lean 如何检查证明 example (a b c : ℝ) : (a * b) * c = b * (a * c) := begin rw mul_comm a b, rw mul_assoc b a c end 在上述证明中，要证明的目标（goal）是“对任意实数 $a,b,c$ 都有 $(a* b) * c=b* (a* c)$”。Lean 检查证明的过程，就是逐行执行位于 begin 与 end 之间的代码，而执行每一行代码都意味着把当前目标变换为新的目标。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://shuxuezhuyi.github.io/post/%E4%BD%BF%E7%94%A8lean%E5%86%99%E8%AF%81%E6%98%8E/" />
+<meta property="article:published_time" content="2021-06-23T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-06-23T00:00:00+00:00" /><meta property="og:site_name" content="数学主义的博客" />
+
+
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="使用 Lean 写证明（写作中）"/>
+<meta name="twitter:description" content="Lean 中的证明如何终止 类型论只有一个核心概念：类型。命题也是一种类型。证明一个命题就是构造一个类型的对象的过程。
+Lean 中命题的类型就是 Prop。如果 P 的类型是 Prop，而 Q 的类型是 P，则 Q 是 P 的一个证明。使用 #check 表达式 即可检查表达式的类型。
+证明的标准写法：theorem 类型A : 类型B := 类型A 的定义，这可以想象成 theorem 证法A : 命题 B := 证法A 的内容。
+要省略一个证明，可以用 sorry，就像这样：theorem 这太难了 : 费马大定理 := sorry。
+Lean 如何检查证明 example (a b c : ℝ) : (a * b) * c = b * (a * c) := begin rw mul_comm a b, rw mul_assoc b a c end 在上述证明中，要证明的目标（goal）是“对任意实数 $a,b,c$ 都有 $(a* b) * c=b* (a* c)$”。Lean 检查证明的过程，就是逐行执行位于 begin 与 end 之间的代码，而执行每一行代码都意味着把当前目标变换为新的目标。"/>
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+<script src="/vendor/js/vue.min.js" ></script>
+
+
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="https://shuxuezhuyi.github.io/scss/journal.min.4dabc90cf94657415a747e8400223bb3c4d11654d1279feff37fd6a11089fe77.css" integrity="sha256-TavJDPlGV0FadH6EACI7s8TRFlTRJ5/v83/WoRCJ/nc=" media="screen">
+
+
+
+<link rel="stylesheet" href="https://shuxuezhuyi.github.io/scss/dark-mode.min.83b57d3d51352700a502fbe45536227cf28ce7e56fedacaf14b7fe499db0f186.css" integrity="sha256-g7V9PVE1JwClAvvkVTYifPKM5&#43;Vv7ayvFLf&#43;SZ2w8YY=" media="screen">
+
+
+<script src="/js/loadCSS.js"></script>
+<script>
+  loadCSS("https://fonts.googleapis.com/css?family=Fira+Mono|Material+Icons");
+</script>
+
+
+  
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  },
+  svg: {
+    fontCache: 'global'
+  }
+};
+</script>
+<script type="text/javascript" id="MathJax-script"
+async
+src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+MathJax.Hub.Queue(function() {
+
+
+
+var all = MathJax.Hub.getAllJax(), i;
+for(i = 0; i < all.length; i += 1) {
+all[i].SourceElement().parentNode.className += ' has-jax';
+}
+});
+</script>
+
+<style>
+code.has-jax {
+font: inherit;
+font-size: 100%;
+background: inherit;
+border: inherit;
+color: #515151;
+}
+</style>
+
+
+
+
+
+  
+    <script src="/js/toc.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div ref="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="https://shuxuezhuyi.github.io">
+    
+        <div class="nav-title">
+            自然之道，是谓数学
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+            
+            
+            
+                
+            
+            
+            
+            <a class="a-block nav-link-item active" href="/post">
+                Archive
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/tags">
+                Tags
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/about">
+                About
+            </a>
+            
+        
+            
+            
+            
+            
+            
+            <a class="a-block nav-link-item false" href="/index.xml">
+                RSS Feed
+            </a>
+            
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2018-2021 数学主义. Licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
+	
+
+    </div>
+    
+</div><div ref="extraContainer" class="extra-container">
+    
+    
+    <div class="toc animated-visibility" :class="{ invisible: scrollY <= 140 }">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目录 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#lean-%e4%b8%ad%e7%9a%84%e8%af%81%e6%98%8e%e5%a6%82%e4%bd%95%e7%bb%88%e6%ad%a2" onclick="onNavClick(`#lean-中的证明如何终止-nav`)" id="lean-中的证明如何终止-nav">
+									Lean 中的证明如何终止
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#lean-%e5%a6%82%e4%bd%95%e6%a3%80%e6%9f%a5%e8%af%81%e6%98%8e" onclick="onNavClick(`#lean-如何检查证明-nav`)" id="lean-如何检查证明-nav">
+									Lean 如何检查证明
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a6%82%e4%bd%95%e8%be%93%e5%85%a5%e7%ac%a6%e5%8f%b7" onclick="onNavClick(`#如何输入符号-nav`)" id="如何输入符号-nav">
+									如何输入符号
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b1%80%e9%83%a8%e5%8f%98%e9%87%8f" onclick="onNavClick(`#局部变量-nav`)" id="局部变量-nav">
+									局部变量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%94%a8%e5%8f%8d%e8%af%81%e6%b3%95%e4%b8%8e%e9%80%86%e5%90%a6%e5%91%bd%e9%a2%98" onclick="onNavClick(`#用反证法与逆否命题-nav`)" id="用反证法与逆否命题-nav">
+									用反证法与逆否命题
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%82%e8%80%83%e6%96%87%e7%8c%ae" onclick="onNavClick(`#参考文献-nav`)" id="参考文献-nav">
+									参考文献
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+    
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top" :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a class="pagination-action" v-on:click="toggleDarkMode">
+            <i class="material-icons pagination-action-icon" v-if="isDarkMode">
+                brightness_4
+            </i>
+            <i class="material-icons pagination-action-icon" v-else="isDarkMode">
+                brightness_7
+            </i>
+        </a>
+        
+        
+    </div>
+</div>
+<div class="single-column-drawer-container" ref="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+                
+                
+                
+                    
+                
+                
+                
+                <a class="a-block drawer-menu-item active" href="/post">
+                    Archive
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/tags">
+                    Tags
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/about">
+                    About
+                </a>
+                
+            
+                
+                
+                
+                
+                
+                <a class="a-block drawer-menu-item false" href="/index.xml">
+                    RSS Feed
+                </a>
+                
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- 目录 -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#lean-%e4%b8%ad%e7%9a%84%e8%af%81%e6%98%8e%e5%a6%82%e4%bd%95%e7%bb%88%e6%ad%a2" onclick="onNavClick(`#lean-中的证明如何终止-nav`)" id="lean-中的证明如何终止-nav">
+									Lean 中的证明如何终止
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#lean-%e5%a6%82%e4%bd%95%e6%a3%80%e6%9f%a5%e8%af%81%e6%98%8e" onclick="onNavClick(`#lean-如何检查证明-nav`)" id="lean-如何检查证明-nav">
+									Lean 如何检查证明
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%a6%82%e4%bd%95%e8%be%93%e5%85%a5%e7%ac%a6%e5%8f%b7" onclick="onNavClick(`#如何输入符号-nav`)" id="如何输入符号-nav">
+									如何输入符号
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b1%80%e9%83%a8%e5%8f%98%e9%87%8f" onclick="onNavClick(`#局部变量-nav`)" id="局部变量-nav">
+									局部变量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%94%a8%e5%8f%8d%e8%af%81%e6%b3%95%e4%b8%8e%e9%80%86%e5%90%a6%e5%91%bd%e9%a2%98" onclick="onNavClick(`#用反证法与逆否命题-nav`)" id="用反证法与逆否命题-nav">
+									用反证法与逆否命题
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%82%e8%80%83%e6%96%87%e7%8c%ae" onclick="onNavClick(`#参考文献-nav`)" id="参考文献-nav">
+									参考文献
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav ref="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div ref="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a ref="navTitle" class="navbar-brand" href="https://shuxuezhuyi.github.io">
+            自然之道，是谓数学
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" v-on:click="toggleDarkMode">
+            <i class="material-icons" v-if="isDarkMode">
+                brightness_4
+            </i>
+            <i class="material-icons" v-else="isDarkMode">
+                brightness_7
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" ref="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="https://shuxuezhuyi.github.io">
+        <div class="single-column-header-title">自然之道，是谓数学</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+<div ref="streamContainer" class="stream-container">
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    使用 Lean 写证明（写作中）
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-06-23 00:00
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/lean">Lean</a>
+                                &nbsp;
+                            
+                                <a href="/tags/%E6%95%B0%E5%AD%A6">数学</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h2 id="lean-中的证明如何终止">Lean 中的证明如何终止</h2>
+<p>类型论只有一个核心概念：类型。命题也是一种类型。<strong>证明</strong>一个命题就是构造一个类型的对象的过程。</p>
+<p>Lean 中命题的类型就是 <em>Prop</em>。如果 P 的类型是 Prop，而 Q 的类型是 P，则 Q 是 P 的一个证明。使用 <code>#check 表达式</code> 即可检查表达式的类型。</p>
+<p>证明的标准写法：<code>theorem 类型A : 类型B := 类型A 的定义</code>，这可以想象成 <code>theorem 证法A : 命题 B := 证法A 的内容</code>。</p>
+<p>要省略一个证明，可以用 <code>sorry</code>，就像这样：<code>theorem 这太难了 : 费马大定理 := sorry</code>。</p>
+<h2 id="lean-如何检查证明">Lean 如何检查证明</h2>
+<pre><code class="language-lean" data-lang="lean">example (a b c : ℝ) : (a * b) * c = b * (a * c) :=
+begin
+  rw mul_comm a b,
+  rw mul_assoc b a c
+end
+</code></pre><p>在上述证明中，要证明的目标（goal）是“对任意实数 $a,b,c$ 都有 $(a* b) * c=b* (a* c)$”。Lean 检查证明的过程，就是逐行执行位于 <code>begin</code> 与 <code>end</code> 之间的代码，而执行每一行代码都意味着把当前目标变换为新的目标。</p>
+<p>目标（goal）由语境（context）和靶（target）构成。例如，如果你在 Lean infoview 看到：</p>
+<pre><code class="language-lean" data-lang="lean">1 goal
+x y : ℕ,
+h₁ : prime x,
+h₂ : ¬even x,
+h₃ : y &gt; x
+⊢ y ≥ 4
+</code></pre><p>那么 <code>x y : ℕ, h₁ : prime x, h₂ : ¬even x, h₃ : y &gt; x</code> 是语境，而 <code>y ≥ 4</code> 是靶；在这个语境中，<code>x y : ℕ</code> 指明涉及的对象，而 <code>h₁ : prime x, h₂ : ¬even x, h₃ : y &gt; x</code> 列举了三个假设（assumption）。</p>
+<h2 id="如何输入符号">如何输入符号</h2>
+<p>注意有很多都是 LaTeX 中的写法。</p>
+<p>数字下标：使用 <code>h\1</code> 得到 <code>h₁</code></p>
+<p>实数集 ℝ：<code>\R</code> 或 <code>\real</code></p>
+<p>左箭头 ←：<code>\l</code></p>
+<p>右箭头 →：<code>\r</code> 或 <code>\to</code></p>
+<p>希腊字母：就用 LaTeX 中的写法，例如 ε 就是 <code>\epsilon</code></p>
+<p>∀：<code>\forall</code></p>
+<p>∃：<code>\exists</code></p>
+<p>¬ ：<code>\not</code></p>
+<p>∧：<code>\and</code></p>
+<p>∨：<code>\or</code></p>
+<p>↔：<code>\iff</code> 或 <code>\lr</code></p>
+<h2 id="局部变量">局部变量</h2>
+<pre><code class="language-lean" data-lang="lean">section
+variables a b c : ℝ
+end
+</code></pre><p>这里 <code>section ... end</code> 声明了局部环境，把 <code>variables</code> 的作用范围约束其中；在这个 section 中，variables 的声明会被其他所有命令捕获。</p>
+<h2 id="用反证法与逆否命题">用反证法与逆否命题</h2>
+<pre><code class="language-lean" data-lang="lean">import data.real.basic  -- 涉及实数需要它
+import tactic.push_neg  -- 它收录了这里用到的 push_neg 与 contrapose!
+open_locale classical  -- 用反证法（by_contradiction）需要它，因为要有排中律
+
+variables a b c : Prop  -- 约定 a, b, c 都是命题
+variables ε δ : ℝ  -- 约定 ε与δ 都是实数
+variables x : ℝ  -- 约定 x 也是实数，其实可以合并到上一行去
+variable f : ℝ → ℝ  -- 约定 f 是定义在实数集上的实值函数
+
+-- 下面这个名叫 f_0 的“引理”说 f 在原点连续。在 Lean 中，关键字 lemma 与关键字 theorem 是一回事。
+-- 这里的写法是 lemma 引理名 (引理条件被省略了) : 引理的结论 :=
+-- 此引理的结论的写法是：任意ε (满足名叫h1的假设 : ε &gt; 0), 存在δ (满足名叫h2的假设 : δ &gt; 0) , （使得对）任意 x (满足名叫h3的假设 :  x 的绝对值 &lt; δ) , （成立）f x &lt; ε
+lemma f_0 : ∀ ε (h1 : ε &gt; 0) , ∃ δ (h2 : δ &gt; 0) , ∀ x (h3 : abs x &lt; δ) , f x &lt; ε :=
+begin
+  by_contradiction H,   -- 原本的靶（作为命题）的否定在这里被命名为 H，这是一条新增的假设，然后靶会被替换成 false （意味着最终必须推出矛盾）。
+  push_neg at H,  -- 进一步把 H 左边的 ¬ 一直推到最右边，得到我们熟悉的反证法的第一步。
+  sorry,
+end
+
+-- 下面是一个省略了名字与条件、只有结论的例题（example）
+example : ¬ (a → b) →  a ∧ ¬ b ∨ c :=
+begin
+  contrapose!,  -- 转为证明逆否命题
+  sorry,
+end
+</code></pre><h2 id="参考文献">参考文献</h2>
+<p>Jeremy Avigad, <em>Type Theory and Practical Foundations</em></p>
+<p><em>Mathematics in Lean</em>, <a href="https://leanprover-community.github.io/mathematics_in_lean/index.html">https://leanprover-community.github.io/mathematics_in_lean/index.html</a></p>
+<p><em>HoTT学习笔记1：类型论基础</em>, <a href="https://zhuanlan.zhihu.com/p/33483631">https://zhuanlan.zhihu.com/p/33483631</a></p>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">最后修改于 2021-06-23</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="https://shuxuezhuyi.github.io/post/lean/">
+			下回<br>Lean Theorem Prover 安装手记
+                </a>
+                
+                
+                
+                <a class="older-posts" href="https://shuxuezhuyi.github.io/post/lyxbind-v1/">
+			上回<br>我的 LyX 快捷键 (v1.0)
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+            </div><div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://amazingrise.net">Rise</a>
+<br>
+移植自 <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2018-2021 数学主义. Licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
+	
+</div>
+            </div>
+    <script>
+let app;
+
+app = new Vue({
+    el: '#app',
+    data: {
+        scrollY: 0,
+        navOpacity: 0,
+        isDrawerOpen: false,
+        mounted: false,
+        isDarkMode: false
+    },
+    methods: {
+            sgn(t, x) {
+                let k = 1. / (1. - 2 * t);
+                if (x <= t) return 0;
+                else if (x >= 1 - t) return 1;
+                else {
+                    return k * (x - t);
+                }
+            },
+            handleScroll() {
+                this.scrollY = window.scrollY;
+                this.navOpacity = this.sgn(.0, Math.min(1, Math.max(0, window.scrollY / (this.pageHeadHeight() - this.navBarHeight() * 0.8))));
+                const {navBar, navBackground, navTitle, extraContainer, streamContainer} = this.$refs;
+
+                if (this.navOpacity >= 1) {
+                    navBackground.style.opacity = 1;
+                    navTitle.style.opacity = 1;
+                } else {
+                    navBackground.style.opacity = 0;
+                    navTitle.style.opacity = 0;
+                }
+            },
+            handleResize() {
+                const {navBar, navBackground, navTitle, extraContainer, streamContainer} = this.$refs;
+                extraContainer.style.left = (streamContainer.offsetWidth - extraContainer.offsetWidth) + 'px';
+            },
+            navBarHeight() {
+                return this.$refs.navBar.offsetHeight;
+            },
+            pageHeadHeight() {
+                return this.$refs.pageHead.offsetHeight;
+            },
+            toggleDrawer() {
+                this.isDrawerOpen = !this.isDrawerOpen;
+                document.getElementsByTagName('html')[0].style.overflow = this.isDrawerOpen ? 'hidden' : 'unset';
+            },
+            closeDrawer() {
+                this.isDrawerOpen = false;
+                document.getElementsByTagName('html')[0].style.overflow = this.isDrawerOpen ? 'hidden' : 'unset';
+            },
+            toggleDarkMode() {
+                this.isDarkMode = !this.isDarkMode;
+                if (this.isDarkMode==true){
+                    document.cookie = "night=1;path=/";
+                    document.body.classList.add("night");
+                } else {
+                    document.cookie = "night=0;path=/";
+                    document.body.classList.remove("night");
+                }
+            },
+            debounce(func, wait, options) {
+                let lastArgs,
+                    lastThis,
+                    maxWait,
+                    result,
+                    timerId,
+                    lastCallTime
+
+                let lastInvokeTime = 0
+                let leading = false
+                let maxing = false
+                let trailing = true
+
+                
+                const useRAF = (!wait && wait !== 0 && typeof root.requestAnimationFrame === 'function')
+
+                if (typeof func !== 'function') {
+                    throw new TypeError('Expected a function')
+                }
+                function isObject(value) {
+                    const type = typeof value
+                    return value != null && (type === 'object' || type === 'function')
+                }
+
+                wait = +wait || 0
+                if (isObject(options)) {
+                    leading = !!options.leading
+                    maxing = 'maxWait' in options
+                    maxWait = maxing ? Math.max(+options.maxWait || 0, wait) : maxWait
+                    trailing = 'trailing' in options ? !!options.trailing : trailing
+                }
+
+                function invokeFunc(time) {
+                    const args = lastArgs
+                    const thisArg = lastThis
+
+                    lastArgs = lastThis = undefined
+                    lastInvokeTime = time
+                    result = func.apply(thisArg, args)
+                    return result
+                }
+
+                function startTimer(pendingFunc, wait) {
+                    if (useRAF) {
+                    root.cancelAnimationFrame(timerId)
+                    return root.requestAnimationFrame(pendingFunc)
+                    }
+                    return setTimeout(pendingFunc, wait)
+                }
+
+                function cancelTimer(id) {
+                    if (useRAF) {
+                    return root.cancelAnimationFrame(id)
+                    }
+                    clearTimeout(id)
+                }
+
+                function leadingEdge(time) {
+                    
+                    lastInvokeTime = time
+                    
+                    timerId = startTimer(timerExpired, wait)
+                    
+                    return leading ? invokeFunc(time) : result
+                }
+
+                function remainingWait(time) {
+                    const timeSinceLastCall = time - lastCallTime
+                    const timeSinceLastInvoke = time - lastInvokeTime
+                    const timeWaiting = wait - timeSinceLastCall
+
+                    return maxing
+                    ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke)
+                    : timeWaiting
+                }
+
+                function shouldInvoke(time) {
+                    const timeSinceLastCall = time - lastCallTime
+                    const timeSinceLastInvoke = time - lastInvokeTime
+
+                    
+                    
+                    
+                    return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
+                    (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait))
+                }
+
+                function timerExpired() {
+                    const time = Date.now()
+                    if (shouldInvoke(time)) {
+                    return trailingEdge(time)
+                    }
+                    
+                    timerId = startTimer(timerExpired, remainingWait(time))
+                }
+
+                function trailingEdge(time) {
+                    timerId = undefined
+
+                    
+                    
+                    if (trailing && lastArgs) {
+                    return invokeFunc(time)
+                    }
+                    lastArgs = lastThis = undefined
+                    return result
+                }
+
+                function cancel() {
+                    if (timerId !== undefined) {
+                    cancelTimer(timerId)
+                    }
+                    lastInvokeTime = 0
+                    lastArgs = lastCallTime = lastThis = timerId = undefined
+                }
+
+                function flush() {
+                    return timerId === undefined ? result : trailingEdge(Date.now())
+                }
+
+                function pending() {
+                    return timerId !== undefined
+                }
+
+                function debounced(...args) {
+                    const time = Date.now()
+                    const isInvoking = shouldInvoke(time)
+
+                    lastArgs = args
+                    lastThis = this
+                    lastCallTime = time
+
+                    if (isInvoking) {
+                    if (timerId === undefined) {
+                        return leadingEdge(lastCallTime)
+                    }
+                    if (maxing) {
+                        
+                        timerId = startTimer(timerExpired, wait)
+                        return invokeFunc(lastCallTime)
+                    }
+                    }
+                    if (timerId === undefined) {
+                    timerId = startTimer(timerExpired, wait)
+                    }
+                    return result
+                }
+                debounced.cancel = cancel
+                debounced.flush = flush
+                debounced.pending = pending
+                return debounced
+                }
+
+    },
+    created() {
+        window.addEventListener('scroll', this.handleScroll);
+        window.addEventListener('resize', this.handleResize);
+        window._nonDesktop = function () {
+            let check = false;
+            (function (a) {
+                if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true;
+            })(navigator.userAgent || navigator.vendor || window.opera);
+            return check;
+        };
+        
+        var night = document.cookie.replace(/(?:(?:^|.*;\s*)night\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+        if (night==""){
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                
+            }
+        }else{
+            
+            if (night=="1") {
+                this.toggleDarkMode();
+            }
+        }
+    },
+    mounted() {
+        this.handleScroll();
+        this.handleResize();
+        this.mounted = true;
+
+        
+        
+        
+
+        document.querySelectorAll("table").forEach(function(elem){
+            elem.classList.add("table-striped");
+            elem.classList.add("table");
+            elem.classList.add("table-responsive");
+            elem.classList.add("table-hover");
+        })
+
+        
+        spy();
+        window.addEventListener('scroll', this.debounce(spy, 250, { 'maxWait': 250 }), false);
+        
+        
+    },
+    destroyed() {
+        window.removeEventListener('scroll', this.handleScroll);
+        window.removeEventListener('resize', this.handleResize);
+    }
+});
+
+
+
+</script>
+    </body>
+</html>
